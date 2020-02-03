@@ -1,0 +1,25 @@
+[
+  {
+    "id": "test-rule",
+    "upstream": {
+      "url": "http://consent:3000/"
+    },
+    "match": {
+      "url": "http://<127.0.0.1|localhost>:4455/test",
+      "methods": ["GET"]
+    },
+    "authenticators": [
+      {
+        "handler": "oauth2_introspection"
+      }
+    ],
+    "authorizer": {
+      "handler": "allow"
+    },
+    "mutators": [
+      {
+        "handler": "id_token"
+      }
+    ]
+  }
+]
