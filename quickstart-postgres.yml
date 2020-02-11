@@ -16,7 +16,7 @@ services:
   hydra-migrate:
     image: oryd/hydra:latest
     environment:
-      - DSN=postgres://hydra:secret@postgresd:5432/hydra?sslmode=disable&max_conns=20&max_idle_conns=4
+      - DSN=postgres://ory:secret@postgresd:5432/accesscontrol?sslmode=disable
     command: migrate sql -e --yes
     restart: on-failure
 
@@ -24,13 +24,27 @@ services:
     depends_on:
       - hydra-migrate
     environment:
-      - DSN=postgres://hydra:secret@postgresd:5432/hydra?sslmode=disable&max_conns=20&max_idle_conns=4
+      - DSN=postgres://ory:secret@postgresd:5432/accesscontrol?sslmode=disable
+
+  keto-migrate:
+    image: oryd/keto:latest
+    environment:
+      - DSN=postgres://ory:secret@postgresd:5432/accesscontrol?sslmode=disable
+    command: migrate sql -e
+    restart: on-failure
+
+  keto-api:
+    depends_on:
+      - keto-migrate
+    environment:
+      # - DSN=memory
+      - DSN=postgres://ory:secret@postgresd:5432/accesscontrol?sslmode=disable
 
   postgresd:
     image: postgres:9.6
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=hydra
+      - POSTGRES_USER=ory
       - POSTGRES_PASSWORD=secret
-      - POSTGRES_DB=hydra
+      - POSTGRES_DB=accesscontrol

@@ -50,3 +50,46 @@ services:
         source: ./volumes/oathkeeper
         target: /etc/config/oathkeeper
     restart: on-failure
+
+  keto-api:
+    image: oryd/keto:latest
+    ports:
+      - "4466:4466"
+    depends_on:
+      - hydra
+      - keto-migrate
+    volumes:
+      - type: bind
+        source: ./volumes/keto/config.yaml
+        target: /etc/config/oathkeeper/config.yaml
+    command: serve --config "/etc/config/keto/config.yaml"
+    restart: on-failure
+
+  keto-policies:
+    image: oryd/keto:latest
+    depends_on:
+      - hydra
+      - keto-api
+      # - keto-migrate
+    volumes:
+      - type: bind
+        source: ./volumes/keto/policies
+        target: /etc/config/keto/policies
+    environment:
+      - KETO_URL=http://keto-api:4466/
+    command: engines acp ory policies import regex /etc/config/keto/policies/policy.json
+    restart: on-failure
+
+  keto-roles:
+    image: oryd/keto:latest
+    depends_on:
+      - hydra
+      - keto-policies
+    volumes:
+      - type: bind
+        source: ./volumes/keto/roles
+        target: /etc/config/keto/roles
+    environment:
+      - KETO_URL=http://keto-api:4466/
+    command: engines acp ory roles import exact /etc/config/keto/roles/roles.json
+    restart: on-failure

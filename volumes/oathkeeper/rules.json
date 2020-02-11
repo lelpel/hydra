@@ -1,11 +1,34 @@
 [
   {
+    "id": "deny-anonymous",
+    "upstream": {
+      "url": "https://httpbin.org/"
+    },
+    "match": {
+      "url": "http://<127.0.0.1|localhost>:4455/get",
+      "methods": ["GET"]
+    },
+    "authenticators": [
+      {
+        "handler": "anonymous"
+      }
+    ],
+    "authorizer": {
+      "handler": "allow"
+    },
+    "mutators": [
+      {
+        "handler": "noop"
+      }
+    ]
+  },
+  {
     "id": "test-rule",
     "upstream": {
       "url": "http://consent:3000/"
     },
     "match": {
-      "url": "http://<127.0.0.1|localhost>:4455/test",
+      "url": "http://<127.0.0.1|localhost>:4455/test/<[a-zA-Z]+>",
       "methods": ["GET"]
     },
     "authenticators": [
@@ -14,11 +37,16 @@
       }
     ],
     "authorizer": {
-      "handler": "allow"
+      "handler": "keto_engine_acp_ory",
+      "config": {
+        "required_action": "get",
+        "required_resource": "/test/$1",
+        "flavor": "regex"
+      }
     },
     "mutators": [
       {
-        "handler": "id_token"
+        "handler": "noop"
       }
     ]
   }

@@ -42,6 +42,16 @@ authorizers:
     enabled: true
   deny:
     enabled: true
+  keto_engine_acp_ory:
+    # Set enabled to true if the authenticator should be enabled and false to disable the authenticator. Defaults to false.
+    enabled: true
+
+    config:
+      base_url: http://keto-api:4466/
+      required_action: get
+      required_resource: /test/$1
+      subject: one:$1
+      flavor: regex
 
 authenticators:
   anonymous:

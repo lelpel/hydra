@@ -1,0 +1,18 @@
+[
+  {
+    "id": "keto:policies:policy:by:role:admin",
+    "description": "This is another example policy which works together with the example consumer and resource server app.",
+    "subjects": ["one:<.*>"],
+    "effect": "allow",
+    "resources": ["/test", "/test/admin", "/test/user"],
+    "actions": ["get", "post", "put", "delete"]
+  },
+  {
+    "id": "keto:policies:policy:by:role:user",
+    "description": "This is another example policy which works together with the example consumer and resource server app.",
+    "subjects": ["user"],
+    "effect": "allow",
+    "resources": ["/test/user"],
+    "actions": ["get"]
+  }
+]

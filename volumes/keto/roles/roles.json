@@ -1,0 +1,10 @@
+[
+  {
+    "id": "admin",
+    "members": ["foo@bar.com", "bar@foo.com"]
+  },
+  {
+    "id": "user",
+    "members": ["a@a.com", "b@b.com"]
+  }
+]
